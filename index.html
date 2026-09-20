@@ -1,0 +1,583 @@
+<title>Чернила города</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1ECE3;
+    --surface:#FFFFFF;
+    --surface-2:#E9E2D5;
+    --ink:#1C1A17;
+    --muted:#75695C;
+    --accent:#AD1F2C;
+    --accent-2:#D9862E;
+    --deep:#1E2A38;
+    --line:#DCD2C2;
+    --pin-ring: rgba(173,31,44,.18);
+    --shadow: 0 1px 2px rgba(28,20,10,.06), 0 8px 24px -12px rgba(28,20,10,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15141A;
+      --surface:#1E1C24;
+      --surface-2:#26232D;
+      --ink:#EEE8DE;
+      --muted:#A79C8D;
+      --accent:#E2555F;
+      --accent-2:#E2A54F;
+      --deep:#8FB3E0;
+      --line:#332F38;
+      --pin-ring: rgba(226,85,95,.22);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15141A;
+    --surface:#1E1C24;
+    --surface-2:#26232D;
+    --ink:#EEE8DE;
+    --muted:#A79C8D;
+    --accent:#E2555F;
+    --accent-2:#E2A54F;
+    --deep:#8FB3E0;
+    --line:#332F38;
+    --pin-ring: rgba(226,85,95,.22);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    padding-inline:20px;
+    padding-block:28px 60px;
+  }
+  h1,h2,h3,.disp{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    font-weight:600;
+    text-wrap:balance;
+  }
+  .mono{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin-inline:auto;}
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:24px;
+    flex-wrap:wrap;
+    padding-bottom:22px; margin-bottom:26px; border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-mark{width:40px;height:40px;flex:none;}
+  .brand-text .name{font-size:22px; letter-spacing:.03em;}
+  .brand-text .tag{font-size:12px; color:var(--muted); text-transform:none; font-family:'Manrope',sans-serif; letter-spacing:0; font-weight:500;}
+  .source-note{
+    font-size:12px; color:var(--muted); max-width:280px; line-height:1.5;
+    padding:10px 12px; border:1px dashed var(--line); border-radius:10px;
+  }
+  .source-note a{color:var(--accent); text-decoration:underline;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:32px; align-items:center;
+    margin-bottom:34px;
+  }
+  @media (max-width:720px){ .hero{grid-template-columns:1fr;} }
+  .hero h1{font-size:clamp(30px,5vw,46px); line-height:1.04; margin:0 0 14px;}
+  .hero h1 em{color:var(--accent); font-style:normal;}
+  .hero p{color:var(--muted); font-size:15.5px; line-height:1.6; max-width:46ch; margin:0 0 18px;}
+  .hero-stats{display:flex; gap:22px; flex-wrap:wrap;}
+  .hero-stats div{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .hero-stats strong{display:block; font-family:'Oswald',sans-serif; font-size:24px; color:var(--ink); letter-spacing:0; text-transform:none;}
+  .flash{width:100%; height:auto;}
+
+  /* ---------- controls ---------- */
+  .panel{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow);
+  }
+  .controls{padding:16px 18px; margin-bottom:18px; display:flex; flex-direction:column; gap:14px;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .pill-group{display:flex; gap:8px; flex-wrap:wrap;}
+  .pill{
+    font-family:'Manrope',sans-serif; font-size:13px; font-weight:600;
+    padding:7px 13px; border-radius:999px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--ink); cursor:pointer; white-space:nowrap;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .pill[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .pill:hover{border-color:var(--accent);}
+  .style-chip{
+    font-size:12px; font-weight:600; padding:6px 11px; border-radius:8px;
+    border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .style-chip svg{width:13px;height:13px; stroke:var(--muted); fill:none;}
+  .style-chip[aria-pressed="true"]{background:var(--deep); border-color:var(--deep); color:#fff;}
+  .style-chip[aria-pressed="true"] svg{stroke:#fff;}
+  .search{
+    flex:1; min-width:180px; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:10px; padding:9px 12px; font-family:'Manrope',sans-serif; font-size:13.5px; color:var(--ink);
+  }
+  .search::placeholder{color:var(--muted);}
+  select, .range-wrap{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:10px;
+    padding:8px 10px; font-family:'Manrope',sans-serif; font-size:13px; color:var(--ink);
+  }
+  .range-wrap{display:flex; align-items:center; gap:8px;}
+  .range-wrap input[type=range]{accent-color:var(--accent);}
+  .view-toggle{display:flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-left:auto;}
+  .view-toggle button{
+    border:none; background:var(--surface-2); color:var(--muted); font-size:12.5px; font-weight:700;
+    padding:8px 14px; cursor:pointer; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .view-toggle button[aria-pressed="true"]{background:var(--accent); color:#fff;}
+  label.mini{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700;}
+
+  /* ---------- map ---------- */
+  .map-panel{padding:18px; margin-bottom:22px; position:relative;}
+  .map-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:10px; flex-wrap:wrap;}
+  .map-head h2{font-size:15px; margin:0;}
+  .back-link{
+    font-size:12px; font-weight:700; color:var(--accent); background:none; border:none; cursor:pointer;
+    display:flex; align-items:center; gap:5px; padding:0; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .map-stage{
+    position:relative; width:100%; aspect-ratio:16/8; border-radius:12px; overflow:hidden;
+    background:
+      radial-gradient(circle at 18% 20%, var(--pin-ring), transparent 45%),
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 40px),
+      var(--surface-2);
+  }
+  .compass{position:absolute; top:12px; right:14px; width:26px; height:26px; opacity:.55;}
+  .compass svg{width:100%;height:100%; stroke:var(--muted); fill:none;}
+  .map-caption{position:absolute; bottom:10px; left:14px; font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .pin{
+    position:absolute; transform:translate(-50%,-100%); cursor:pointer; text-align:center;
+    background:none; border:none; padding:0;
+  }
+  .pin .dot{
+    width:14px; height:14px; border-radius:50% 50% 50% 0; background:var(--accent);
+    transform:rotate(-45deg); margin-inline:auto; box-shadow:0 0 0 5px var(--pin-ring);
+  }
+  .pin.city-pin .dot{width:var(--size,16px); height:var(--size,16px);}
+  .pin .plabel{
+    display:inline-block; margin-top:4px; font-size:10.5px; font-weight:700; color:var(--ink);
+    background:var(--surface); padding:2px 7px; border-radius:6px; border:1px solid var(--line);
+    white-space:nowrap; transform:translateY(2px);
+  }
+  .pin.master-pin .dot{background:var(--deep); width:10px; height:10px; box-shadow:0 0 0 4px color-mix(in srgb, var(--deep) 20%, transparent);}
+  .pin:hover .plabel, .pin:focus-visible .plabel{outline:1px solid var(--accent);}
+
+  /* ---------- results ---------- */
+  .results-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
+  .results-head h2{font-size:16px; margin:0;}
+  .count{color:var(--muted); font-size:12.5px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:16px;}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px;
+    display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow);
+    transition:outline-color .3s, transform .15s;
+    outline:2px solid transparent; outline-offset:2px;
+  }
+  .card.flash-highlight{outline-color:var(--accent);}
+  .card-top{display:flex; justify-content:space-between; gap:10px;}
+  .avatar{
+    width:42px;height:42px;border-radius:50%; background:var(--deep); color:#fff; flex:none;
+    display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-size:15px;
+  }
+  .card h3{font-size:16.5px; margin:0; text-transform:none; letter-spacing:0;}
+  .loc{font-size:12px; color:var(--muted); margin-top:2px;}
+  .rating{font-size:12px; font-weight:700; color:var(--accent-2); white-space:nowrap;}
+  .styles-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .tag{
+    font-size:11px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:7px;
+    padding:3px 8px; display:inline-flex; align-items:center; gap:4px;
+  }
+  .tag svg{width:11px;height:11px; stroke:var(--muted); fill:none;}
+  .card-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:8px; border-top:1px solid var(--line);}
+  .price{font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600;}
+  .price span{color:var(--muted); font-size:10.5px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:.04em; font-family:'Manrope',sans-serif;}
+  .cta{
+    font-size:12px; font-weight:700; color:#fff; background:var(--accent); border:none; border-radius:8px;
+    padding:8px 12px; cursor:pointer; text-decoration:none; display:inline-block;
+  }
+  .empty{padding:40px 20px; text-align:center; color:var(--muted); font-size:14px;}
+
+  footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.7;}
+  footer a{color:var(--accent); text-decoration:underline;}
+  .badge-demo{
+    display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:2px 9px; margin-bottom:10px;
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-dagger" viewBox="0 0 24 24"><path d="M12 2v13M9 5h6M8 15l4 3 4-3M12 18v4" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-swallow" viewBox="0 0 24 24"><path d="M2 12c4-4 8-1 10 0 2-1 6-4 10 0-4 1-7 4-10 8-3-4-6-7-10-8Z" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-rose" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4.2" stroke-width="1.5"/><path d="M12 14v8M9 22h6M8 8c1-2 3-2 4 0M16 8c-1-2-3-2-4 0" stroke-width="1.4"/></symbol>
+    <symbol id="i-triangle" viewBox="0 0 24 24"><path d="M12 3 22 20H2Z" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 3v17M7 20 12 11l5 9" stroke-width="1" opacity=".6"/></symbol>
+    <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.4" stroke-width="1.6"/><circle cx="12" cy="12" r="8" stroke-width="1" opacity=".5"/></symbol>
+    <symbol id="i-letter" viewBox="0 0 24 24"><path d="M5 20 11 4h2l6 16M8 14h8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z" stroke-width="1.5"/><circle cx="12" cy="12" r="2.8" stroke-width="1.5"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 0 1-14 0c0-3.5 3-7 7-12Z" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="var(--accent)" stroke-width="1.6">
+        <path d="M20 4v13M15 8h10M13 20l7 5 7-5M20 25v11" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-text">
+        <div class="name disp">Чернила города</div>
+        <div class="tag">каталог тату-мастеров по городам</div>
+      </div>
+    </div>
+    <div class="source-note">
+      Демо-прототип на примерных данных — по мотивам формата канала
+      <a href="https://t.me/tattoo_prices" target="_blank" rel="noopener">@tattoo_prices</a>,
+      где мастера публикуются постами вперемешку. Здесь то же самое — карточками по городам.
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="badge-demo">Пример / demo-данные</span>
+      <h1 class="disp">Тату-мастера <em>вашего города</em> — на одной карте</h1>
+      <p>Вместо ленты постов — карта и фильтры: город, стиль, цена. Выбираете точку на карте
+        или город из списка — видите, кто работает рядом, что умеет и от какой суммы берёт сеанс.</p>
+      <div class="hero-stats">
+        <div>Городов<strong id="stat-cities">–</strong></div>
+        <div>Мастеров<strong id="stat-masters">–</strong></div>
+        <div>Стилей<strong id="stat-styles">–</strong></div>
+      </div>
+    </div>
+    <svg class="flash" viewBox="0 0 220 160" fill="none" stroke="var(--deep)" stroke-width="1.3">
+      <rect x="1" y="1" width="218" height="158" rx="10" stroke="var(--line)"/>
+      <g stroke="var(--accent)">
+        <path d="M60 30v40M50 38h20" stroke-linecap="round"/>
+        <path d="M40 90l6 3 6-3-2-3h-8Z"/>
+      </g>
+      <circle cx="150" cy="45" r="16" />
+      <path d="M150 61v14M144 122h12" />
+      <path d="M20 120c14-10 26-2 34 0 8-2 20-10 34 0-14 3-24 12-34 26-10-14-20-23-34-26Z" stroke="var(--deep)"/>
+      <path d="M160 100c6-9 12-16 12-22a12 12 0 0 0-24 0c0 6 6 13 12 22Z" />
+      <path d="M105 60 175 130M175 60 105 130" stroke="var(--line)" stroke-dasharray="3 4"/>
+      <text x="20" y="20" font-family="Oswald" font-size="9" letter-spacing="2" fill="var(--muted)" stroke="none">FLASH SHEET · REF</text>
+    </svg>
+  </section>
+
+  <div class="panel controls">
+    <div class="row">
+      <div class="pill-group" id="city-pills"></div>
+      <div class="view-toggle" role="group" aria-label="Вид">
+        <button id="vt-map" aria-pressed="true">Карта</button>
+        <button id="vt-list" aria-pressed="false">Список</button>
+      </div>
+    </div>
+    <div class="row">
+      <input class="search" id="search" type="text" placeholder="Поиск: имя мастера или стиль…">
+      <div class="range-wrap">
+        <label class="mini" for="price-range">до</label>
+        <input type="range" id="price-range" min="3000" max="12000" step="500" value="12000">
+        <span class="mono" id="price-range-val">12 000 ₽</span>
+      </div>
+      <select id="sort">
+        <option value="rating">Сортировка: по рейтингу</option>
+        <option value="price-asc">Цена: сначала дешевле</option>
+        <option value="price-desc">Цена: сначала дороже</option>
+      </select>
+    </div>
+    <div class="row" id="style-chips"></div>
+  </div>
+
+  <div class="panel map-panel" id="map-panel">
+    <div class="map-head">
+      <h2 id="map-title">Города на карте</h2>
+      <button class="back-link" id="map-back" hidden>← Все города</button>
+    </div>
+    <div class="map-stage" id="map-stage">
+      <div class="compass"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="M12 6l2.5 5.5L12 18l-2.5-6.5Z" fill="var(--accent)" stroke="none"/></svg></div>
+      <div class="map-caption" id="map-caption">схематичная карта, не географическая точность</div>
+    </div>
+  </div>
+
+  <div class="results-head">
+    <h2 class="disp" style="font-size:18px">Мастера</h2>
+    <span class="count mono" id="result-count">— результатов</span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Никого не нашлось — попробуйте снять пару фильтров.</div>
+
+  <footer>
+    Это демо на примерных мастерах и ценах — иллюстрирует, как контент канала
+    <a href="https://t.me/tattoo_prices" target="_blank" rel="noopener">@tattoo_prices</a>
+    может выглядеть в виде карты и фильтров вместо ленты постов.
+    Следующий шаг — разбор реальных постов канала (город/мастер/цена) и подключение живых данных.
+  </footer>
+</div>
+
+<script>
+// Весь код страницы обёрнут в одну функцию, которая сразу же вызывается (в конце файла — "})();").
+// Это защищает наши переменные (STYLE_ICON, CITIES, MASTERS...) от конфликтов с чужим кодом на странице.
+(function(){
+
+  // Какой иконкой (из <symbol> в начале файла) рисовать каждый стиль тату.
+  // Пример: у мастера с тегом "Блэкворк" рядом будет маленький значок кинжала.
+  var STYLE_ICON = {
+    "Блэкворк":"i-dagger","Олдскул":"i-swallow","Треш-полька":"i-rose","Геометрия":"i-triangle",
+    "Минимализм":"i-dot","Леттеринг":"i-letter","Реализм":"i-eye","Акварель":"i-drop"
+  };
+
+  // Список городов и их координаты (x, y — в процентах) на схематичной карте.
+  // Это НЕ настоящие GPS-координаты, а просто "где нарисовать точку города" на плашке-карте.
+  var CITIES = {
+    msk:{name:"Москва", x:34, y:56},
+    spb:{name:"Санкт-Петербург", x:26, y:34},
+    kzn:{name:"Казань", x:49, y:52},
+    ekb:{name:"Екатеринбург", x:63, y:46},
+    nsk:{name:"Новосибирск", x:80, y:56}
+  };
+
+  // ПРИМЕРНЫЕ данные мастеров (заглушка вместо реального разбора канала @tattoo_prices).
+  // У каждого мастера: город (ключ из CITIES), район, имя, стили, цена "от" в рублях,
+  // рейтинг и x/y — координаты его точки на карте района (тоже условные, не реальный адрес).
+  var MASTERS = [
+    {id:1, city:"msk", district:"Пресня", name:"Анна Вольнова", styles:["Блэкворк","Геометрия"], price:8000, rating:4.9, x:38, y:30},
+    {id:2, city:"msk", district:"Арбат", name:"Игорь Северцев", styles:["Олдскул","Треш-полька"], price:6000, rating:4.7, x:62, y:55},
+    {id:3, city:"msk", district:"Сокол", name:"Мила Ким", styles:["Минимализм","Леттеринг"], price:4500, rating:4.8, x:22, y:68},
+    {id:4, city:"msk", district:"Тверская", name:"Рита Осень", styles:["Реализм","Блэкворк"], price:10000, rating:5.0, x:70, y:24},
+    {id:5, city:"spb", district:"Петроградка", name:"Дарья Крылова", styles:["Акварель","Реализм"], price:9000, rating:4.9, x:30, y:32},
+    {id:6, city:"spb", district:"Васильевский", name:"Тимофей Реброво", styles:["Блэкворк"], price:7000, rating:4.6, x:65, y:60},
+    {id:7, city:"kzn", district:"Вахитовский", name:"Ляйсан Гараева", styles:["Геометрия","Минимализм"], price:5000, rating:4.8, x:40, y:40},
+    {id:8, city:"kzn", district:"Ново-Савиновский", name:"Марат Юсупов", styles:["Олдскул"], price:5500, rating:4.5, x:68, y:65},
+    {id:9, city:"ekb", district:"Центр", name:"Ольга Стужева", styles:["Реализм"], price:8500, rating:4.9, x:45, y:45},
+    {id:10, city:"ekb", district:"Уралмаш", name:"Денис Кряжев", styles:["Треш-полька","Блэкворк"], price:6500, rating:4.6, x:60, y:22},
+    {id:11, city:"nsk", district:"Центральный", name:"Ксения Морева", styles:["Леттеринг","Минимализм"], price:4000, rating:4.7, x:35, y:50},
+    {id:12, city:"nsk", district:"Заельцовский", name:"Артём Волков", styles:["Акварель"], price:7500, rating:4.8, x:66, y:28}
+  ];
+
+  // "state" — это единственное место, где хранится "что сейчас выбрал пользователь":
+  // какой город, какие стили-фильтры включены, что введено в поиск, какая макс. цена,
+  // как сортировать список и что показывать — карту или список. Все функции ниже
+  // читают этот объект и перерисовывают страницу под него — данные нигде не дублируются.
+  var state = {city:"all", styles:new Set(), search:"", maxPrice:12000, sort:"rating", view:"map", mapLevel:"country"};
+
+  // Короткие ссылки на нужные элементы страницы (кнопки, поля, блоки), чтобы не искать
+  // их через document.getElementById(...) заново в каждой функции.
+  var el = {
+    cityPills: document.getElementById("city-pills"),
+    styleChips: document.getElementById("style-chips"),
+    search: document.getElementById("search"),
+    priceRange: document.getElementById("price-range"),
+    priceVal: document.getElementById("price-range-val"),
+    sort: document.getElementById("sort"),
+    grid: document.getElementById("grid"),
+    empty: document.getElementById("empty"),
+    resultCount: document.getElementById("result-count"),
+    mapStage: document.getElementById("map-stage"),
+    mapTitle: document.getElementById("map-title"),
+    mapCaption: document.getElementById("map-caption"),
+    mapBack: document.getElementById("map-back"),
+    mapPanel: document.getElementById("map-panel"),
+    vtMap: document.getElementById("vt-map"),
+    vtList: document.getElementById("vt-list"),
+    statCities: document.getElementById("stat-cities"),
+    statMasters: document.getElementById("stat-masters"),
+    statStyles: document.getElementById("stat-styles")
+  };
+
+  // Превращает число 8000 в красивую строку "от 8 000 ₽" — используется на карте у точек мастеров.
+  function fmtPrice(n){ return "от " + n.toLocaleString("ru-RU") + " ₽"; }
+  // Возвращает готовый HTML-тег <svg>, который "вставляет" одну из иконок стилей (см. STYLE_ICON выше).
+  function iconUse(styleName){ return '<svg><use href="#' + (STYLE_ICON[styleName]||"i-dot") + '"/></svg>'; }
+
+  // Рисует кнопки-"таблетки" городов вверху ("Все города", "Москва", "Казань"...).
+  // При клике на кнопку запоминаем выбранный город в state и заново отрисовываем страницу (render()).
+  function buildCityPills(){
+    var frag = '<button class="pill" data-city="all" aria-pressed="' + (state.city==="all") + '">Все города</button>';
+    Object.keys(CITIES).forEach(function(k){
+      frag += '<button class="pill" data-city="' + k + '" aria-pressed="' + (state.city===k) + '">' + CITIES[k].name + '</button>';
+    });
+    el.cityPills.innerHTML = frag;
+    el.cityPills.querySelectorAll(".pill").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var c = btn.getAttribute("data-city");
+        state.city = c;
+        state.mapLevel = (c === "all") ? "country" : "city";
+        render();
+      });
+    });
+  }
+
+  // Рисует чипы стилей ("Блэкворк", "Реализм"...). Клик по чипу включает/выключает этот стиль
+  // как фильтр (state.styles — это Set, то есть "набор без повторов"). После клика пересобираем
+  // только список карточек (renderGrid), карту трогать не нужно — фильтр по стилю на неё не влияет.
+  function buildStyleChips(){
+    var all = Object.keys(STYLE_ICON);
+    el.styleChips.innerHTML = all.map(function(s){
+      return '<button class="style-chip" data-style="' + s + '" aria-pressed="false">' + iconUse(s) + s + '</button>';
+    }).join("");
+    el.styleChips.querySelectorAll(".style-chip").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var s = btn.getAttribute("data-style");
+        if(state.styles.has(s)){ state.styles.delete(s); btn.setAttribute("aria-pressed","false"); }
+        else { state.styles.add(s); btn.setAttribute("aria-pressed","true"); }
+        renderGrid();
+      });
+    });
+  }
+
+  // Главная функция фильтрации: берёт полный список MASTERS и оставляет только тех,
+  // кто подходит под текущий state (город + макс. цена + выбранные стили + текст поиска),
+  // а затем сортирует результат (по рейтингу или по цене). Карточки и точки на карте
+  // всегда строятся из результата этой функции — самих MASTERS мы никогда не меняем.
+  function filtered(){
+    return MASTERS.filter(function(m){
+      if(state.city !== "all" && m.city !== state.city) return false;
+      if(m.price > state.maxPrice) return false;
+      if(state.styles.size && ![...state.styles].every(function(s){ return m.styles.indexOf(s) > -1; })) return false;
+      if(state.search){
+        var q = state.search.toLowerCase();
+        var hay = (m.name + " " + m.styles.join(" ") + " " + m.district).toLowerCase();
+        if(hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    }).sort(function(a,b){
+      if(state.sort === "price-asc") return a.price - b.price;
+      if(state.sort === "price-desc") return b.price - a.price;
+      return b.rating - a.rating;
+    });
+  }
+
+  // Перерисовывает блок с карточками мастеров: берёт отфильтрованный список (filtered()),
+  // строит для каждого мастера HTML-карточку (имя, район, рейтинг, теги стилей, цена, кнопка)
+  // и вставляет всё одним куском в el.grid. Если список пуст — показывает блок "Никого не нашлось".
+  function renderGrid(){
+    var list = filtered();
+    el.resultCount.textContent = list.length + (list.length===1 ? " результат" : " результатов");
+    el.empty.hidden = list.length !== 0;
+    el.grid.innerHTML = list.map(function(m){
+      var initials = m.name.split(" ").map(function(w){return w[0];}).join("");
+      return '<article class="card" id="card-' + m.id + '">' +
+        '<div class="card-top">' +
+          '<div style="display:flex;gap:10px;align-items:center;">' +
+            '<div class="avatar">' + initials + '</div>' +
+            '<div><h3>' + m.name + '</h3><div class="loc">' + CITIES[m.city].name + ' · ' + m.district + '</div></div>' +
+          '</div>' +
+          '<div class="rating">★ ' + m.rating.toFixed(1) + '</div>' +
+        '</div>' +
+        '<div class="styles-row">' + m.styles.map(function(s){ return '<span class="tag">' + iconUse(s) + s + '</span>'; }).join("") + '</div>' +
+        '<div class="card-bottom">' +
+          '<div class="price mono">' + m.price.toLocaleString("ru-RU") + ' ₽<span>от, за сеанс</span></div>' +
+          '<a class="cta" href="https://t.me/tattoo_prices" target="_blank" rel="noopener">Смотреть работы →</a>' +
+        '</div>' +
+      '</article>';
+    }).join("");
+  }
+
+  // Вызывается при клике на точку мастера на карте: подсвечивает его карточку в списке
+  // ниже (добавляет класс flash-highlight — это красная рамка из CSS) и плавно прокручивает
+  // страницу к этой карточке, чтобы было видно, что клик по карте и карточка — это один мастер.
+  function highlightCard(id){
+    document.querySelectorAll(".card.flash-highlight").forEach(function(c){ c.classList.remove("flash-highlight"); });
+    var card = document.getElementById("card-" + id);
+    if(card){
+      card.classList.add("flash-highlight");
+      card.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+  }
+
+  // Рисует карту. У карты два "уровня":
+  //  1) "country" — общий вид: одна точка на каждый город, размер точки растёт с числом мастеров.
+  //     Клик по городу переключает на уровень "city" для этого города.
+  //  2) "city" — точки конкретных мастеров внутри выбранного города (условное расположение
+  //     по районам, не настоящие адреса). Клик по мастеру подсвечивает его карточку (highlightCard).
+  // Перед отрисовкой всегда сначала удаляем старые точки (pins.forEach(remove)), чтобы не плодить дубли.
+  function renderMap(){
+    el.mapPanel.hidden = state.view !== "map";
+    if(state.view !== "map") return;
+    var stage = el.mapStage;
+    var pins = stage.querySelectorAll(".pin");
+    pins.forEach(function(p){ p.remove(); });
+
+    if(state.mapLevel === "country"){
+      el.mapTitle.textContent = "Города на карте";
+      el.mapCaption.textContent = "схематичная карта, не географическая точность";
+      el.mapBack.hidden = true;
+      Object.keys(CITIES).forEach(function(k){
+        var count = MASTERS.filter(function(m){ return m.city===k; }).length;
+        var size = 14 + count * 2;
+        var btn = document.createElement("button");
+        btn.className = "pin city-pin";
+        btn.style.left = CITIES[k].x + "%";
+        btn.style.top = CITIES[k].y + "%";
+        btn.style.setProperty("--size", size + "px");
+        btn.innerHTML = '<span class="dot"></span><span class="plabel">' + CITIES[k].name + ' · ' + count + '</span>';
+        btn.addEventListener("click", function(){
+          state.city = k; state.mapLevel = "city"; render();
+        });
+        stage.appendChild(btn);
+      });
+    } else {
+      var cityMasters = MASTERS.filter(function(m){ return m.city === state.city; });
+      el.mapTitle.textContent = CITIES[state.city].name + " — мастера на карте района";
+      el.mapCaption.textContent = "условное расположение по районам";
+      el.mapBack.hidden = false;
+      cityMasters.forEach(function(m){
+        var btn = document.createElement("button");
+        btn.className = "pin master-pin";
+        btn.style.left = m.x + "%";
+        btn.style.top = m.y + "%";
+        btn.innerHTML = '<span class="dot"></span><span class="plabel">' + m.name.split(" ")[0] + ' · ' + fmtPrice(m.price) + '</span>';
+        btn.addEventListener("click", function(){ highlightCard(m.id); });
+        stage.appendChild(btn);
+      });
+    }
+  }
+
+  // "Полная" перерисовка: обновляет, какая кнопка города подсвечена активной,
+  // затем пересобирает и карту, и список карточек. Вызывается при смене города —
+  // единственном действии, которое одновременно влияет и на карту, и на список.
+  function render(){
+    document.querySelectorAll("#city-pills .pill").forEach(function(p){
+      p.setAttribute("aria-pressed", p.getAttribute("data-city") === state.city ? "true" : "false");
+    });
+    renderMap();
+    renderGrid();
+  }
+
+  // Дальше — подписки на события: что произойдёт при вводе текста, движении ползунка цены,
+  // смене сортировки, клике "Все города" и переключении вкладок "Карта"/"Список".
+  el.search.addEventListener("input", function(){ state.search = el.search.value; renderGrid(); });
+  el.priceRange.addEventListener("input", function(){
+    state.maxPrice = Number(el.priceRange.value);
+    el.priceVal.textContent = state.maxPrice.toLocaleString("ru-RU") + " ₽";
+    renderGrid();
+  });
+  el.sort.addEventListener("change", function(){ state.sort = el.sort.value; renderGrid(); });
+  el.mapBack.addEventListener("click", function(){ state.city = "all"; state.mapLevel = "country"; render(); });
+  el.vtMap.addEventListener("click", function(){ state.view="map"; el.vtMap.setAttribute("aria-pressed","true"); el.vtList.setAttribute("aria-pressed","false"); renderMap(); });
+  el.vtList.addEventListener("click", function(){ state.view="list"; el.vtMap.setAttribute("aria-pressed","false"); el.vtList.setAttribute("aria-pressed","true"); renderMap(); });
+
+  // Заполняем цифры в шапке (сколько городов/мастеров/стилей) и подпись у ползунка цены.
+  el.statCities.textContent = Object.keys(CITIES).length;
+  el.statMasters.textContent = MASTERS.length;
+  el.statStyles.textContent = Object.keys(STYLE_ICON).length;
+  el.priceVal.textContent = Number(el.priceRange.value).toLocaleString("ru-RU") + " ₽";
+
+  // Первый запуск страницы: строим кнопки городов и чипы стилей с нуля,
+  // затем один раз отрисовываем карту и список — дальше всё живёт на событиях выше.
+  buildCityPills();
+  buildStyleChips();
+  render();
+})();
+</script>
