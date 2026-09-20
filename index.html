@@ -14,7 +14,9 @@
     --deep:#1E2A38;
     --line:#DCD2C2;
     --pin-ring: rgba(173,31,44,.18);
-    --shadow: 0 1px 2px rgba(28,20,10,.06), 0 8px 24px -12px rgba(28,20,10,.18);
+    /* Текст поверх заливки var(--accent) (кнопки, активные пилюли). Белый на светло-красном
+       фоне в тёмной теме не проходит WCAG (см. --on-accent ниже) — в светлой белый работает. */
+    --on-accent:#FFFFFF;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -25,10 +27,10 @@
       --muted:#A79C8D;
       --accent:#E2555F;
       --accent-2:#E2A54F;
-      --deep:#8FB3E0;
+      --deep:#35547C;
       --line:#332F38;
       --pin-ring: rgba(226,85,95,.22);
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+      --on-accent:#15141A;
     }
   }
   :root[data-theme="dark"]{
@@ -39,10 +41,10 @@
     --muted:#A79C8D;
     --accent:#E2555F;
     --accent-2:#E2A54F;
-    --deep:#8FB3E0;
+    --deep:#35547C;
     --line:#332F38;
     --pin-ring: rgba(226,85,95,.22);
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+    --on-accent:#15141A;
   }
 
   *{box-sizing:border-box;}
@@ -97,7 +99,6 @@
   /* ---------- controls ---------- */
   .panel{
     background:var(--surface); border:1px solid var(--line); border-radius:16px;
-    box-shadow:var(--shadow);
   }
   .controls{padding:16px 18px; margin-bottom:18px; display:flex; flex-direction:column; gap:14px;}
   .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
@@ -108,7 +109,7 @@
     background:var(--surface-2); color:var(--ink); cursor:pointer; white-space:nowrap;
     transition:background .15s, color .15s, border-color .15s;
   }
-  .pill[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .pill[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
   .pill:hover{border-color:var(--accent);}
   .style-chip{
     font-size:12px; font-weight:600; padding:6px 11px; border-radius:8px;
@@ -134,7 +135,7 @@
     border:none; background:var(--surface-2); color:var(--muted); font-size:12.5px; font-weight:700;
     padding:8px 14px; cursor:pointer; text-transform:uppercase; letter-spacing:.04em;
   }
-  .view-toggle button[aria-pressed="true"]{background:var(--accent); color:#fff;}
+  .view-toggle button[aria-pressed="true"]{background:var(--accent); color:var(--on-accent);}
   label.mini{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700;}
 
   /* ---------- map ---------- */
@@ -155,7 +156,7 @@
   }
   .compass{position:absolute; top:12px; right:14px; width:26px; height:26px; opacity:.55;}
   .compass svg{width:100%;height:100%; stroke:var(--muted); fill:none;}
-  .map-caption{position:absolute; bottom:10px; left:14px; font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .map-caption{position:absolute; bottom:10px; left:14px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
   .pin{
     position:absolute; transform:translate(-50%,-100%); cursor:pointer; text-align:center;
     background:none; border:none; padding:0;
@@ -180,7 +181,7 @@
   .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:16px;}
   .card{
     background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px;
-    display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:10px;
     transition:outline-color .3s, transform .15s;
     outline:2px solid transparent; outline-offset:2px;
   }
@@ -203,7 +204,7 @@
   .price{font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600;}
   .price span{color:var(--muted); font-size:10.5px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:.04em; font-family:'Manrope',sans-serif;}
   .cta{
-    font-size:12px; font-weight:700; color:#fff; background:var(--accent); border:none; border-radius:8px;
+    font-size:12px; font-weight:700; color:var(--on-accent); background:var(--accent); border:none; border-radius:8px;
     padding:8px 12px; cursor:pointer; text-decoration:none; display:inline-block;
   }
   .empty{padding:40px 20px; text-align:center; color:var(--muted); font-size:14px;}
@@ -211,7 +212,7 @@
   footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.7;}
   footer a{color:var(--accent); text-decoration:underline;}
   .badge-demo{
-    display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
     color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:2px 9px; margin-bottom:10px;
   }
 </style>
@@ -419,8 +420,9 @@
   }
 
   // Рисует чипы стилей ("Блэкворк", "Реализм"...). Клик по чипу включает/выключает этот стиль
-  // как фильтр (state.styles — это Set, то есть "набор без повторов"). После клика пересобираем
-  // только список карточек (renderGrid), карту трогать не нужно — фильтр по стилю на неё не влияет.
+  // как фильтр (state.styles — это Set, то есть "набор без повторов"). Стиль влияет и на список,
+  // и на карту (у мастера, не подходящего под фильтр, не должно быть точки на карте — иначе клик
+  // по ней ведёт в никуда), поэтому пересобираем оба.
   function buildStyleChips(){
     var all = Object.keys(STYLE_ICON);
     el.styleChips.innerHTML = all.map(function(s){
@@ -431,26 +433,36 @@
         var s = btn.getAttribute("data-style");
         if(state.styles.has(s)){ state.styles.delete(s); btn.setAttribute("aria-pressed","false"); }
         else { state.styles.add(s); btn.setAttribute("aria-pressed","true"); }
+        renderMap();
         renderGrid();
       });
     });
   }
 
+  // Проверяет мастера на соответствие всем фильтрам, КРОМЕ города (цена, стили, поиск).
+  // Стили — это "ИЛИ": мастер проходит, если у него есть ХОТЯ БЫ ОДИН из выбранных стилей,
+  // а не обязательно все сразу (раньше было "И", из-за чего выбор двух разных стилей почти
+  // всегда давал пустой список). Эта функция — общая основа и для списка карточек, и для карты,
+  // чтобы они никогда не показывали разных мастеров.
+  function passesNonCityFilters(m){
+    if(m.price > state.maxPrice) return false;
+    if(state.styles.size && !m.styles.some(function(s){ return state.styles.has(s); })) return false;
+    if(state.search){
+      var q = state.search.toLowerCase();
+      var hay = (m.name + " " + m.styles.join(" ") + " " + m.district).toLowerCase();
+      if(hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  }
+
   // Главная функция фильтрации: берёт полный список MASTERS и оставляет только тех,
-  // кто подходит под текущий state (город + макс. цена + выбранные стили + текст поиска),
-  // а затем сортирует результат (по рейтингу или по цене). Карточки и точки на карте
-  // всегда строятся из результата этой функции — самих MASTERS мы никогда не меняем.
+  // кто подходит под текущий state (город + всё остальное из passesNonCityFilters),
+  // а затем сортирует результат (по рейтингу или по цене). Карточки строятся из
+  // результата этой функции — сами MASTERS мы никогда не меняем.
   function filtered(){
     return MASTERS.filter(function(m){
       if(state.city !== "all" && m.city !== state.city) return false;
-      if(m.price > state.maxPrice) return false;
-      if(state.styles.size && ![...state.styles].every(function(s){ return m.styles.indexOf(s) > -1; })) return false;
-      if(state.search){
-        var q = state.search.toLowerCase();
-        var hay = (m.name + " " + m.styles.join(" ") + " " + m.district).toLowerCase();
-        if(hay.indexOf(q) === -1) return false;
-      }
-      return true;
+      return passesNonCityFilters(m);
     }).sort(function(a,b){
       if(state.sort === "price-asc") return a.price - b.price;
       if(state.sort === "price-desc") return b.price - a.price;
@@ -502,6 +514,12 @@
   //  2) "city" — точки конкретных мастеров внутри выбранного города (условное расположение
   //     по районам, не настоящие адреса). Клик по мастеру подсвечивает его карточку (highlightCard).
   // Перед отрисовкой всегда сначала удаляем старые точки (pins.forEach(remove)), чтобы не плодить дубли.
+  //
+  // ВАЖНО: и счётчик на уровне городов, и точки мастеров на уровне города строятся через
+  // passesNonCityFilters() — те же цена/стиль/поиск, что и в списке карточек. Раньше карта
+  // показывала ВСЕХ мастеров города независимо от фильтров: точка была на месте, а клик по ней
+  // никуда не вёл (карточки-то отфильтрованы) — карта как будто "не работала". Теперь карта и
+  // список всегда согласованы: если мастера нет в списке, его точки не будет и на карте.
   function renderMap(){
     el.mapPanel.hidden = state.view !== "map";
     if(state.view !== "map") return;
@@ -514,7 +532,7 @@
       el.mapCaption.textContent = "схематичная карта, не географическая точность";
       el.mapBack.hidden = true;
       Object.keys(CITIES).forEach(function(k){
-        var count = MASTERS.filter(function(m){ return m.city===k; }).length;
+        var count = MASTERS.filter(function(m){ return m.city===k && passesNonCityFilters(m); }).length;
         var size = 14 + count * 2;
         var btn = document.createElement("button");
         btn.className = "pin city-pin";
@@ -528,9 +546,11 @@
         stage.appendChild(btn);
       });
     } else {
-      var cityMasters = MASTERS.filter(function(m){ return m.city === state.city; });
+      var cityMasters = MASTERS.filter(function(m){ return m.city === state.city && passesNonCityFilters(m); });
       el.mapTitle.textContent = CITIES[state.city].name + " — мастера на карте района";
-      el.mapCaption.textContent = "условное расположение по районам";
+      el.mapCaption.textContent = cityMasters.length
+        ? "условное расположение по районам"
+        : "никто не подходит под текущие фильтры в этом городе";
       el.mapBack.hidden = false;
       cityMasters.forEach(function(m){
         var btn = document.createElement("button");
@@ -557,10 +577,13 @@
 
   // Дальше — подписки на события: что произойдёт при вводе текста, движении ползунка цены,
   // смене сортировки, клике "Все города" и переключении вкладок "Карта"/"Список".
-  el.search.addEventListener("input", function(){ state.search = el.search.value; renderGrid(); });
+  // Поиск и цена, как и стили, теперь тоже перерисовывают карту (renderMap), не только
+  // список — иначе точки на карте снова разъезжались бы с тем, что показывает список.
+  el.search.addEventListener("input", function(){ state.search = el.search.value; renderMap(); renderGrid(); });
   el.priceRange.addEventListener("input", function(){
     state.maxPrice = Number(el.priceRange.value);
     el.priceVal.textContent = state.maxPrice.toLocaleString("ru-RU") + " ₽";
+    renderMap();
     renderGrid();
   });
   el.sort.addEventListener("change", function(){ state.sort = el.sort.value; renderGrid(); });

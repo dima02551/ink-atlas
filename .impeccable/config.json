@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-20T12:58:55.871Z",
+        "reason": "Agent: all 13 remaining findings pair a dark-mode-only token value (--muted #A79C8D, --ink #EEE8DE, --accent #E2555F) or an untraceable #000000 against a literal #ffffff/#1e1c24 background that never co-renders with it -- the theme blocks (index.html ~L22-51) always swap bg/surface/ink/muted together, so light-vs-dark cross-pairings are unreachable. The one real finding (white text on --accent in dark mode, 3.7:1) was fixed this session via a new --on-accent token."
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-20T12:58:56.019Z",
+        "reason": "Agent: sole match is the hero <h1> headline, capped by the global h1,h2,h3,.disp{text-transform:uppercase} heading rule -- a deliberate flash-sheet/tattoo-flash art-direction choice for headings, not a body paragraph."
+      }
+    ]
+  }
+}
