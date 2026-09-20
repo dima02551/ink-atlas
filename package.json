@@ -1,0 +1,26 @@
+{
+  "name": "ink-atlas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scrape": "node scripts/scrape.js",
+    "build": "node scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dima02551/ink-atlas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/dima02551/ink-atlas/issues"
+  },
+  "homepage": "https://github.com/dima02551/ink-atlas#readme",
+  "devDependencies": {
+    "cheerio": "^1.2.0"
+  }
+}
